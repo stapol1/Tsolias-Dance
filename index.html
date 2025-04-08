@@ -65,7 +65,7 @@
       image-rendering: pixelated;
     }
 
-    #restartBtn {
+    #restartBtn, #shareBtn {
       margin-top: 15px;
       padding: 10px 20px;
       font-size: 1rem;
@@ -98,6 +98,7 @@
     <div id="timer">Time: 20s</div>
     <div id="instructions">Press the buttons alternatively to dance!</div>
     <button id="restartBtn">Restart</button>
+    <button id="shareBtn">Share Score</button>
   </div>
 
   <!-- Sound effects -->
@@ -120,6 +121,7 @@
     const rightBtn = document.getElementById('rightBtn');
     const instructions = document.getElementById('instructions');
     const restartBtn = document.getElementById('restartBtn');
+    const shareBtn = document.getElementById('shareBtn');
     const popSound = document.getElementById('popSound');
     const buzzSound = document.getElementById('buzzSound');
 
@@ -193,6 +195,13 @@
       button.addEventListener('touchstart', startEvent);
       button.addEventListener('touchend', endEvent);
     }
+
+    // Share score function
+    shareBtn.addEventListener('click', () => {
+      const shareText = `I just played "Dance with Tsolias!" and scored ${score} dancing moves! Can you beat that?`;
+      const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+      window.open(shareUrl, '_blank');
+    });
 
     restartBtn.addEventListener('click', () => {
       location.reload();
