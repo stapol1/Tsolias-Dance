@@ -53,7 +53,7 @@
       background-color: darkgreen;
     }
 
-    #score, #timer, #instructions {
+    #score, #timer, #instructions, #highScore {
       font-size: 1.5rem;
       margin: 10px;
     }
@@ -94,10 +94,15 @@
       <button class="btn" id="rightBtn"></button>
     </div>
     <div id="score">Score: 0</div>
+    <div id="highScore">High Score: 0</div>
     <div id="timer">Time: 20s</div>
     <div id="instructions">Press the buttons alternatively to dance!</div>
     <button id="restartBtn">Restart</button>
   </div>
+
+  <!-- Sound effects -->
+  <audio id="popSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg" preload="auto"></audio>
+  <audio id="buzzSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
 
   <script>
     let score = 0;
@@ -108,20 +113,31 @@
     let interval;
 
     const scoreDisplay = document.getElementById('score');
+    const highScoreDisplay = document.getElementById('highScore');
     const timerDisplay = document.getElementById('timer');
     const heroImg = document.getElementById('hero-img');
     const leftBtn = document.getElementById('leftBtn');
     const rightBtn = document.getElementById('rightBtn');
     const instructions = document.getElementById('instructions');
     const restartBtn = document.getElementById('restartBtn');
+    const popSound = document.getElementById('popSound');
+    const buzzSound = document.getElementById('buzzSound');
+
+    // Load high score from localStorage
+    let highScore = localStorage.getItem('tsoliasHighScore') || 0;
+    highScoreDisplay.textContent = `High Score: ${highScore}`;
 
     function updateScore(currentLeg) {
       if (gameOver) return;
+
       if (lastLeg !== currentLeg) {
         score++;
         scoreDisplay.textContent = `Score: ${score}`;
+        popSound.currentTime = 0;
+        popSound.play();
       } else {
-        // Wrong leg - give feedback
+        buzzSound.currentTime = 0;
+        buzzSound.play();
         scoreDisplay.style.color = 'red';
         setTimeout(() => scoreDisplay.style.color = 'black', 200);
       }
@@ -145,6 +161,11 @@
       rightBtn.disabled = true;
       instructions.textContent = `Total dancing moves: ${score}`;
       restartBtn.style.display = 'inline-block';
+
+      if (score > highScore) {
+        localStorage.setItem('tsoliasHighScore', score);
+        highScoreDisplay.textContent = `High Score: ${score}`;
+      }
     }
 
     function addPressEvents(button, leg) {
