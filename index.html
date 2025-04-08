@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tsolias' Dance</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
@@ -15,15 +15,18 @@
       height: 100vh;
       background: #cce6ff;
       margin: 0;
+      text-align: center;
     }
+
     h1 {
       font-size: 1.5rem;
       margin-top: 20px;
-      text-align: center;
     }
+
     #game-container {
       text-align: center;
     }
+
     .btn {
       width: 120px;
       height: 120px;
@@ -33,58 +36,94 @@
       border-radius: 10px;
       box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
     }
+
     #leftBtn {
       background-color: red;
     }
+
     #rightBtn {
       background-color: green;
     }
+
     #leftBtn:active {
       background-color: darkred;
     }
+
     #rightBtn:active {
       background-color: darkgreen;
     }
+
     #score, #timer, #instructions {
       font-size: 1.5rem;
       margin: 10px;
     }
+
     #hero-img {
       width: 200px;
       height: auto;
       margin-bottom: 20px;
       image-rendering: pixelated;
     }
+
+    #restartBtn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #333;
+      color: white;
+      display: none;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .btn {
+        width: 100px;
+        height: 100px;
+      }
+    }
   </style>
 </head>
 <body>
   <h1>Dance with Tsolias!</h1>
   <div id="game-container">
-    <img id="hero-img" src="tsolias.png" alt="Tsolias">
+    <img id="hero-img" src="tsolias.png" alt="Tsolias" />
     <div>
       <button class="btn" id="leftBtn"></button>
       <button class="btn" id="rightBtn"></button>
     </div>
     <div id="score">Score: 0</div>
-    <div id="timer">Time: 30s</div>
+    <div id="timer">Time: 20s</div>
     <div id="instructions">Press the buttons alternatively to dance!</div>
+    <button id="restartBtn">Restart</button>
   </div>
 
   <script>
     let score = 0;
-    let timeLeft = 30;
+    let timeLeft = 20;
     let lastLeg = '';
     let timerStarted = false;
+    let gameOver = false;
     let interval;
 
     const scoreDisplay = document.getElementById('score');
     const timerDisplay = document.getElementById('timer');
     const heroImg = document.getElementById('hero-img');
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+    const instructions = document.getElementById('instructions');
+    const restartBtn = document.getElementById('restartBtn');
 
     function updateScore(currentLeg) {
+      if (gameOver) return;
       if (lastLeg !== currentLeg) {
         score++;
         scoreDisplay.textContent = `Score: ${score}`;
+      } else {
+        // Wrong leg - give feedback
+        scoreDisplay.style.color = 'red';
+        setTimeout(() => scoreDisplay.style.color = 'black', 200);
       }
       lastLeg = currentLeg;
     }
@@ -95,10 +134,17 @@
         timerDisplay.textContent = `Time: ${timeLeft}s`;
         if (timeLeft <= 0) {
           clearInterval(interval);
-          document.getElementById('leftBtn').disabled = true;
-          document.getElementById('rightBtn').disabled = true;
+          endGame();
         }
       }, 1000);
+    }
+
+    function endGame() {
+      gameOver = true;
+      leftBtn.disabled = true;
+      rightBtn.disabled = true;
+      instructions.textContent = `Total dancing moves: ${score}`;
+      restartBtn.style.display = 'inline-block';
     }
 
     function addPressEvents(button, leg) {
@@ -119,9 +165,7 @@
         }
       };
 
-      const endEvent = (e) => {
-        e.preventDefault();
-      };
+      const endEvent = (e) => e.preventDefault();
 
       button.addEventListener('mousedown', startEvent);
       button.addEventListener('mouseup', endEvent);
@@ -129,8 +173,12 @@
       button.addEventListener('touchend', endEvent);
     }
 
-    addPressEvents(document.getElementById('leftBtn'), 'left');
-    addPressEvents(document.getElementById('rightBtn'), 'right');
+    restartBtn.addEventListener('click', () => {
+      location.reload();
+    });
+
+    addPressEvents(leftBtn, 'left');
+    addPressEvents(rightBtn, 'right');
   </script>
 </body>
 </html>
