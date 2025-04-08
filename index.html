@@ -98,7 +98,7 @@
     <div id="timer">Time: 20s</div>
     <div id="instructions">Press the buttons alternatively to dance!</div>
     <button id="restartBtn">Restart</button>
-    <button id="shareBtn">Share Score</button>
+    <button id="shareBtn">Share on WhatsApp</button>
   </div>
 
   <!-- Sound effects -->
@@ -196,10 +196,10 @@
       button.addEventListener('touchend', endEvent);
     }
 
-    // Share score function
+    // Share on WhatsApp function
     shareBtn.addEventListener('click', () => {
-      const shareText = `I just played "Dance with Tsolias!" and scored ${score} dancing moves! Can you beat that?`;
-      const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+      const shareText = `My Tsolias danced ${score} times! What about yours?`;
+      const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
       window.open(shareUrl, '_blank');
     });
 
